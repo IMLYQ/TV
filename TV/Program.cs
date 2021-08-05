@@ -12,29 +12,18 @@ namespace TV
     class Program
     {
         static void Main(string[] args)
-        { 
-            HttpHelpers httpHelpers = new HttpHelpers();
-            HttpItems items = new HttpItems();
-            Console.WriteLine("请输入需要抓取的链接");
-            
+        {
+            Console.WriteLine("请输入需要抓取的链接"); 
             //items.Url = "https://m.193291.com/videodetails/38272.html";//请求地址
-            items.Url = Console.ReadLine();
-            items.Method = "Get";//请求方式 post 
-            HttpResults hr = httpHelpers.GetHtml(items);
-            if (!string.IsNullOrWhiteSpace(hr.Html)) 
-            { 
-               Console.WriteLine("获取网页源完成，开始解析");
-               JX(hr.Html);
-
-               Console.WriteLine("解析完成");
-               Console.WriteLine("-----------------------------------");
-            }
-        } 
+            var url = Console.ReadLine();
+            JX(url);
+            Console.WriteLine("抓取完毕");
+        }
         /// <summary>
         /// 解析XML
         /// </summary>
         /// <param name="htmlCode"></param>
-        public static void JX(string htmlCode)
+        public static void JX(string url)
         {
 
             //HtmlAgilityPack
@@ -43,9 +32,13 @@ namespace TV
             string path = System.AppDomain.CurrentDomain.BaseDirectory;
             //var filname = "抓取文件.txt";
 
-            HtmlDocument document = new HtmlDocument(); 
-            document.LoadHtml(htmlCode);
+            HtmlDocument document = new HtmlDocument();
+            //document.LoadHtml(htmlCode); 
+            var web = new HtmlWeb();
+            document = web.Load(url);
             HtmlNode rootNode = document.DocumentNode;
+
+
             //categoryNodeList 具有相同类型的节点的集合                //标签@属性='属性名称'
             //HtmlNodeCollection categoryNodeList = rootNode.SelectNodes("//div[@id='content']//li[@id='li3_0']//span[@id='s3p0']");
             //也可以通过Xpath路径的形式获取 Xpath路径可以使用HAPExplorer.exe（通过上面的源码地址可以下载并生成工具）
@@ -53,13 +46,14 @@ namespace TV
 
 
             HtmlNodeCollection aa = rootNode.SelectNodes("/html[1]/body[1]/div[2]/div[1]/a[3]");
-            var filname = aa[0].InnerText.Trim()+".txt";
+            var filname = aa[0].InnerText.Trim() + ".txt";
             foreach (var item in categoryNodeList)
             {
                 var sapn = item.InnerHtml.Trim();
                 var herf = sapn.Split('"')[1];
+                Console.WriteLine(herf);
                 WriteMessage(path + filname, herf);
-            } 
+            }
         }
 
         /// <summary>
