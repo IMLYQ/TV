@@ -3,6 +3,7 @@ using HttpCode.Core;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection.Metadata;
 using System.Runtime.Intrinsics.Arm;
 using System.Text;
@@ -13,11 +14,19 @@ namespace TV
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("请输入需要抓取的链接"); 
+            Console.WriteLine("请输入需要抓取的链接");
             //items.Url = "https://m.193291.com/videodetails/38272.html";//请求地址
             var url = Console.ReadLine();
             JX(url);
             Console.WriteLine("抓取完毕");
+
+            //Take()  循环多少次
+            //foreach (var item in Fib().Take(15))
+            //{
+            //    Console.WriteLine(item); 
+            //}
+
+
         }
         /// <summary>
         /// 解析XML
@@ -71,6 +80,22 @@ namespace TV
                     sw.WriteLine("{0}\n", msg, DateTime.Now);
                     sw.Flush();
                 }
+            }
+        }
+
+        /// <summary>
+        /// 实现斐波那契数列
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<int> Fib()
+        {
+            var (x, y) = (0, 1);
+            yield return x;
+            yield return y;
+            while (true) 
+            {
+                (x, y) = (y, x + y);
+                yield return y;
             }
         }
     }
